@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>exp</groupId>
-	<artifactId>web</artifactId>
+	<artifactId>vaadinExperiment</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>web</name>

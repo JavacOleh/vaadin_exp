@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+//TODO: Нужна абстракция(Например LangSelectorStylizer, LangAddition)
 public class LanguageSelector extends HorizontalLayout {
 
     public static final List<String> languages = Arrays.asList("English", "Русский", "Українська");
@@ -50,7 +51,7 @@ public class LanguageSelector extends HorizontalLayout {
         // Позиционирование по краю экрана
         getStyle().set("position", "fixed");
         getStyle().set("z-index", "1000");
-        if (gravity.equalsIgnoreCase("top-left")) {
+        if (gravity != null && gravity.equalsIgnoreCase("top-left")) {
             getStyle().set("top", "10px");
             getStyle().set("left", "10px");
         } else {
