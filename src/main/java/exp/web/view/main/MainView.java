@@ -1,30 +1,39 @@
 package exp.web.view.main;
 
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
+import exp.web.entity.Person;
+import exp.web.repository.PeopleRepository;
+import jakarta.annotation.security.RolesAllowed;
 
-@Route("")
-@AnonymousAllowed
+import static exp.web.config.StaticData.mainEndPoint;
+
+@Route(mainEndPoint)
+@RolesAllowed("ROLE_ADMIN")
 public class MainView extends VerticalLayout {
-    MainAddition mainAddition;
-    Text text = new Text("");
-    Button goToLogin = new Button("");
     VerticalLayout wrapper = new VerticalLayout();
+    Grid<Person> grid = new Grid<>(Person.class, false);
+    ListDataProvider<Person> dataProvider;
+    TextField filterText = new TextField();
+    PeopleRepository peopleRepository;
+    MainAddition addition;
 
-    public MainView() {
-        wrapperInput();
+    public MainView(PeopleRepository peopleRepository) {
+        this.peopleRepository = peopleRepository;
 
-        mainAddition = new MainAddition(this);
+        setupLayout();
+
+        addition = new MainAddition(this);
 
         add(wrapper);
     }
 
-    private void wrapperInput() {
+    private void setupLayout() {
         wrapper.setAlignItems(Alignment.CENTER);
-        wrapper.add(text, goToLogin);
+        wrapper.add(filterText, grid);
 
         setSizeFull(); // 🔥 важно
         setJustifyContentMode(JustifyContentMode.CENTER);
