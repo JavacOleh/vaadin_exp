@@ -1,10 +1,10 @@
 package exp.web.view.main;
 
+import exp.util.CookieUtil;
 import exp.web.config.StaticData;
-import exp.web.view.lang.LanguageSelector;
 
 import static exp.web.config.StaticData.authEndPoint;
-import static exp.web.config.StaticData.registerEndPoint;
+import static exp.web.view.lang.LanguageSelector.LANG_KEY;
 
 public class MainAddition {
     MainView view;
@@ -15,23 +15,22 @@ public class MainAddition {
         view.goToLogin.addClickListener(e ->
                 view.getUI().ifPresent(ui -> ui.navigate(authEndPoint)));
 
-        view.languageSelector = new LanguageSelector(null, lang -> {
-            switch (lang.toLowerCase()) {
-                case StaticData.ENGLISH -> {
-                    view.text.setText("Experiment");
-                    view.goToLogin.setText("Log in");
-                }
-
-                case StaticData.RUSSIAN -> {
-                    view.text.setText("Експеримент");
-                    view.goToLogin.setText("Авторизация");
-                }
-
-                case StaticData.UKRAINIAN -> {
-                    view.text.setText("Експеримент");
-                    view.goToLogin.setText("Авторизація");
-                }
+        var lang = CookieUtil.readCookie(LANG_KEY);
+        switch (lang.toLowerCase()) {
+            case StaticData.ENGLISH -> {
+                view.text.setText("Experiment");
+                view.goToLogin.setText("Log in");
             }
-        });
+
+            case StaticData.RUSSIAN -> {
+                view.text.setText("Експеримент");
+                view.goToLogin.setText("Авторизация");
+            }
+
+            default -> {
+                view.text.setText("Експеримент");
+                view.goToLogin.setText("Авторизація");
+            }
+        }
     }
 }

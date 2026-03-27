@@ -3,18 +3,24 @@ package exp.web.view.lang;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.server.VaadinService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import exp.web.config.StaticData;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static exp.util.CookieUtil.readCookie;
+import static exp.util.CookieUtil.saveLanguageCookie;
+
 //TODO: Нужна абстракция(Например LangSelectorStylizer, LangAddition)
 public class LanguageSelector extends HorizontalLayout {
-
-    public static final List<String> languages = Arrays.asList("English", "Русский", "Українська");
+    public static final List<String> languages =
+            Arrays.asList(
+                    StaticData.ENGLISH,
+                    StaticData.RUSSIAN,
+                    StaticData.UKRAINIAN
+            );
+    public static final String LANG_KEY = "language";
 
     public LanguageSelector(String gravity, Consumer<String> onLanguageChange) {
         setPadding(false);
@@ -35,7 +41,7 @@ public class LanguageSelector extends HorizontalLayout {
 
         for (String lang : languages) {
             Button langButton = new Button(lang, e -> {
-                saveLanguageCookie(lang);
+                saveLanguageCookie(LANG_KEY, lang);
                 onLanguageChange.accept(lang);
                 dropdown.getStyle().set("display", "none");
             });
@@ -63,49 +69,28 @@ public class LanguageSelector extends HorizontalLayout {
             boolean shown = "block".equals(dropdown.getStyle().get("display"));
             if (!shown) {
                 // Определяем сторону окна
-                globeButton.getElement().executeJs(
-                        "const rect = this.getBoundingClientRect();" +
-                                "const width = window.innerWidth;" +
-                                "const dropdown = this.nextElementSibling;" +
-                                "if(rect.left + dropdown.offsetWidth > width) {" +
-                                " dropdown.style.left = 'auto'; dropdown.style.right = '0px';" +
-                                "} else {" +
-                                " dropdown.style.left = '0px'; dropdown.style.right = 'auto';" +
-                                "}"
-                );
+                globeButton.getElement().executeJs("""
+                            const rect = this.getBoundingClientRect();
+                            const width = window.innerWidth;
+                            const dropdown = this.nextElementSibling;
+                            if(rect.left + dropdown.offsetWidth > width) {
+                                dropdown.style.left = 'auto';
+                                dropdown.style.right = '0px';
+                            } else {
+                                dropdown.style.left = '0px';
+                                dropdown.style.right = 'auto';
+                            }
+                        """);
             }
             dropdown.getStyle().set("display", shown ? "none" : "block");
         });
 
         // Считываем куку
-        String savedLang = readLanguageCookie();
-        if (savedLang != null && languages.contains(savedLang)) {
-            onLanguageChange.accept(savedLang);
-        }
-    }
+        String savedLang = readCookie(LANG_KEY);
+        savedLang = languages.contains(savedLang)
+                ? savedLang
+                : "";
 
-    private void saveLanguageCookie(String lang) {
-        var response = VaadinService.getCurrentResponse();
-        if (response instanceof HttpServletResponse httpResponse) {
-            Cookie cookie = new Cookie("language", lang);
-            cookie.setPath("/");
-            cookie.setMaxAge(60 * 60 * 24 * 365);
-            httpResponse.addCookie(cookie);
-        }
-    }
-
-    private String readLanguageCookie() {
-        var request = VaadinService.getCurrentRequest();
-        if (request != null) {
-            var cookies = request.getCookies();
-            if (cookies != null) {
-                for (var c : cookies) {
-                    if ("language".equals(c.getName())) {
-                        return c.getValue();
-                    }
-                }
-            }
-        }
-        return null;
+        onLanguageChange.accept(savedLang);
     }
 }

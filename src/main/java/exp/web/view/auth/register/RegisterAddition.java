@@ -19,6 +19,7 @@ public class RegisterAddition {
                 case StaticData.ENGLISH -> {
                     view.nameField.setLabel("Login");
                     view.passwordField.setLabel("Password");
+                    view.confirmPasswordField.setLabel("Repeat password");
                     view.doRegister.setText("Sign up");
                     view.notificationText = "Successfully registered";
                     view.goToLogin.setText("Authorization");
@@ -26,15 +27,17 @@ public class RegisterAddition {
 
                 case StaticData.RUSSIAN -> {
                     view.nameField.setLabel("Логин");
-                    view.passwordField.setLabel("Пароль");
+                    view.passwordField.setLabel("Повторите пароль");
+                    view.confirmPasswordField.setLabel("Пароль");
                     view.doRegister.setText("Зарегистрироваться");
                     view.notificationText = "Успешно зарегистрировано";
                     view.goToLogin.setText("Авторизация");
                 }
 
-                case StaticData.UKRAINIAN -> {
+                default -> {
                     view.nameField.setLabel("Логін");
                     view.passwordField.setLabel("Пароль");
+                    view.confirmPasswordField.setLabel("Повторіть пароль");
                     view.doRegister.setText("Зареєструватися");
                     view.notificationText = "Успішно зареєстровано";
                     view.goToLogin.setText("Авторизація");

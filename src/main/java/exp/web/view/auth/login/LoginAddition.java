@@ -33,7 +33,7 @@ public class LoginAddition {
                     view.goToRegister.setText("Регистрация");
                 }
 
-                case StaticData.UKRAINIAN -> {
+                default -> {
                     view.nameField.setLabel("Логін");
                     view.passwordField.setLabel("Пароль");
                     view.doLogin.setText("Авторизуватися");
