@@ -5,7 +5,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class CookieUtil {
-    public static void saveLanguageCookie(String key, String value) {
+    public static void saveCookie(String key, String value) {
         var response = VaadinService.getCurrentResponse();
         if (response instanceof HttpServletResponse httpResponse) {
             if (key != null && value != null) {

@@ -8,13 +8,19 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import exp.web.repository.UserRepository;
 import exp.web.view.lang.LanguageSelector;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 import static exp.web.config.StaticData.authEndPoint;
 
 @AnonymousAllowed
 @Route(authEndPoint)
 public class LoginView extends VerticalLayout {
+    SecurityContextRepository securityContextRepository;
+    AuthenticationManager authManager;
+    UserRepository userRepository;
     LoginAddition loginAddition;
     final String languageSelectorGravity = "top-right";
     TextField nameField = new TextField("");
@@ -26,7 +32,12 @@ public class LoginView extends VerticalLayout {
     LanguageSelector languageSelector;
     String notificationText = "";
 
-    public LoginView() {
+    public LoginView(UserRepository userRepository,
+                     AuthenticationManager authManager,
+                     SecurityContextRepository securityContextRepository) {
+        this.securityContextRepository = securityContextRepository;
+        this.userRepository = userRepository;
+        this.authManager = authManager;
         // Корневой VerticalLayout на весь экран
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER); // вертикальное центрирование
