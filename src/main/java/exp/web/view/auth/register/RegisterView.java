@@ -21,6 +21,7 @@ public class RegisterView extends VerticalLayout {
     final String languageSelectorGravity = "top-right";
     TextField nameField = new TextField("");
     PasswordField passwordField = new PasswordField("");
+    PasswordField confirmPasswordField = new PasswordField("");
     FormLayout formLayout = new FormLayout();
     Button doRegister = new Button("");
     Button goToLogin = new Button("");
@@ -41,7 +42,7 @@ public class RegisterView extends VerticalLayout {
     private void wrapperInput() {
         formLayout.setWidth("400px"); // ширина формы
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1)); // одна колонка
-        formLayout.add(nameField, passwordField, doRegister, goToLogin);
+        formLayout.add(nameField, passwordField, confirmPasswordField, doRegister, goToLogin);
         formLayout.setColspan(doRegister, 1);
 
         // горизонтальное центрирование
