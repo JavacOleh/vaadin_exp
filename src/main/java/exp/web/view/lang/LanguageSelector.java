@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static exp.util.CookieUtil.readCookie;
-import static exp.util.CookieUtil.saveLanguageCookie;
+import static exp.util.CookieUtil.saveCookie;
 
 //TODO: Нужна абстракция(Например LangSelectorStylizer, LangAddition)
 public class LanguageSelector extends HorizontalLayout {
@@ -41,7 +41,7 @@ public class LanguageSelector extends HorizontalLayout {
 
         for (String lang : languages) {
             Button langButton = new Button(lang, e -> {
-                saveLanguageCookie(LANG_KEY, lang);
+                saveCookie(LANG_KEY, lang);
                 onLanguageChange.accept(lang);
                 dropdown.getStyle().set("display", "none");
             });

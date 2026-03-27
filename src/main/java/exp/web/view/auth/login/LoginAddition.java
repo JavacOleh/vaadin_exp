@@ -2,11 +2,20 @@ package exp.web.view.auth.login;
 
 
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
+import exp.util.CookieUtil;
 import exp.web.config.StaticData;
 import exp.web.view.lang.LanguageSelector;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.text.MessageFormat;
+import java.util.Objects;
 
+import static exp.web.config.StaticData.mainEndPoint;
 import static exp.web.config.StaticData.registerEndPoint;
 
 public class LoginAddition {
@@ -46,15 +55,47 @@ public class LoginAddition {
         view.goToRegister.addClickListener(e ->
                 view.getUI().ifPresent(ui -> ui.navigate(registerEndPoint)));
 
-        view.doLogin.addSingleClickListener(
-                event ->
-                        Notification.show(MessageFormat.format("""
-                                {2}:
-                                - "{0}"
-                                - "{1}"
-                                """, view.nameField.getValue(), view.passwordField.getValue(), view.notificationText))
-        );
+        view.doLogin.addClickListener(event -> doLogin());
 
-        view.add(view.languageSelector); // добавляем прямо в корень VerticalLayout
+        view.add(view.languageSelector);
+    }
+
+    private void doLogin() {
+        String username = view.nameField.getValue();
+        String password = view.passwordField.getValue();
+
+        try {
+            var token = new UsernamePasswordAuthenticationToken(username, password);
+            var auth = view.authManager.authenticate(token);
+
+            // Створюємо новий security context і кладемо туди authentication
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(auth);
+            SecurityContextHolder.setContext(context);
+
+            // Беремо поточний request/response Vaadin і явно зберігаємо context в HTTP session
+            HttpServletRequest request =
+                    ((VaadinServletRequest) VaadinServletRequest.getCurrent()).getHttpServletRequest();
+
+            HttpServletResponse response =
+                    ((VaadinServletResponse) VaadinServletResponse.getCurrent()).getHttpServletResponse();
+
+            request.getSession(true); // гарантуємо наявність сесії
+            view.securityContextRepository.saveContext(context, request, response);
+
+            Notification.show(view.notificationText);
+
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_ADMIN"));
+
+            if (isAdmin) {
+                view.getUI().ifPresent(ui -> ui.navigate(mainEndPoint));
+            } else {
+                Notification.show("Нет прав администратора");
+            }
+
+        } catch (Exception ex) {
+            Notification.show("Неверный логин или пароль");
+        }
     }
 }

@@ -1,36 +1,43 @@
 package exp.web.view.main;
 
-import exp.util.CookieUtil;
-import exp.web.config.StaticData;
-
-import static exp.web.config.StaticData.authEndPoint;
-import static exp.web.view.lang.LanguageSelector.LANG_KEY;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import exp.web.entity.Person;
 
 public class MainAddition {
     MainView view;
 
     public MainAddition(MainView view) {
         this.view = view;
+        setupFiltering();
+        setupGrid();
+    }
 
-        view.goToLogin.addClickListener(e ->
-                view.getUI().ifPresent(ui -> ui.navigate(authEndPoint)));
+    private void setupGrid() {
+        view.grid.addColumn(Person::getFirstName).setHeader("First Name");
+        view.grid.addColumn(Person::getLastName).setHeader("Last Name");
+        view.grid.addColumn(Person::getAge).setHeader("Age");
 
-        var lang = CookieUtil.readCookie(LANG_KEY);
-        switch (lang.toLowerCase()) {
-            case StaticData.ENGLISH -> {
-                view.text.setText("Experiment");
-                view.goToLogin.setText("Log in");
+        view.dataProvider = new ListDataProvider<>(view.peopleRepository.findAll());
+        view.grid.setDataProvider(view.dataProvider);
+
+        view.grid.setWidthFull();
+        view.grid.setHeight("400px");
+    }
+    private void setupFiltering() {
+        view.filterText.setPlaceholder("Search...");
+        view.filterText.setClearButtonVisible(true);
+
+        view.filterText.addValueChangeListener(event -> {
+            String filter = event.getValue().trim().toLowerCase();
+            if (filter.isEmpty()) {
+                view.dataProvider.clearFilters();
+            } else {
+                view.dataProvider.setFilter(person ->
+                        person.getFirstName().toLowerCase().contains(filter) ||
+                                person.getLastName().toLowerCase().contains(filter) ||
+                                String.valueOf(person.getAge()).contains(filter)
+                );
             }
-
-            case StaticData.RUSSIAN -> {
-                view.text.setText("Експеримент");
-                view.goToLogin.setText("Авторизация");
-            }
-
-            default -> {
-                view.text.setText("Експеримент");
-                view.goToLogin.setText("Авторизація");
-            }
-        }
+        });
     }
 }
