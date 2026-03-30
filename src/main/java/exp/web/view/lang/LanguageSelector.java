@@ -22,7 +22,7 @@ public class LanguageSelector extends HorizontalLayout {
             );
     public static final String LANG_KEY = "language";
 
-    public LanguageSelector(String gravity, Consumer<String> onLanguageChange) {
+    public LanguageSelector(Consumer<String> onLanguageChange) {
         setPadding(false);
         setSpacing(false);
 
@@ -53,17 +53,6 @@ public class LanguageSelector extends HorizontalLayout {
         wrapper.getStyle().set("position", "relative");
         wrapper.add(globeButton, dropdown);
         add(wrapper);
-
-        // Позиционирование по краю экрана
-        getStyle().set("position", "fixed");
-        getStyle().set("z-index", "1000");
-        if (gravity != null && gravity.equalsIgnoreCase("top-left")) {
-            getStyle().set("top", "10px");
-            getStyle().set("left", "10px");
-        } else {
-            getStyle().set("top", "10px");
-            getStyle().set("right", "10px");
-        }
 
         globeButton.addClickListener(e -> {
             boolean shown = "block".equals(dropdown.getStyle().get("display"));

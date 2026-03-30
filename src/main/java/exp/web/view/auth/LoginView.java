@@ -1,4 +1,4 @@
-package exp.web.view.auth.login;
+package exp.web.view.auth;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -10,6 +10,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import exp.web.repository.UserRepository;
 import exp.web.view.lang.LanguageSelector;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.context.SecurityContextRepository;
 
@@ -22,15 +23,19 @@ public class LoginView extends VerticalLayout {
     AuthenticationManager authManager;
     UserRepository userRepository;
     LoginAddition loginAddition;
-    final String languageSelectorGravity = "top-right";
+
+    LanguageSelector languageSelector;
+    String notificationText = "";
+
+    HorizontalLayout header = new HorizontalLayout(); // Хедер
+    VerticalLayout content = new VerticalLayout(); // Контент страницы
+
     TextField nameField = new TextField("");
     PasswordField passwordField = new PasswordField("");
     FormLayout formLayout = new FormLayout();
     Button doLogin = new Button("");
-    Button goToRegister = new Button("");
-    HorizontalLayout hWrapper = new HorizontalLayout(); // Горизонтальная обёртка для центрирования формы
-    LanguageSelector languageSelector;
-    String notificationText = "";
+
+    HorizontalLayout hWrapper = new HorizontalLayout(); // Центрирование формы
 
     public LoginView(UserRepository userRepository,
                      AuthenticationManager authManager,
@@ -38,26 +43,38 @@ public class LoginView extends VerticalLayout {
         this.securityContextRepository = securityContextRepository;
         this.userRepository = userRepository;
         this.authManager = authManager;
-        // Корневой VerticalLayout на весь экран
-        setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER); // вертикальное центрирование
-
         loginAddition = new LoginAddition(this);
 
+        setSizeFull();
+        setPadding(false);
+        setSpacing(false);
+
+        // 🔹 Header
+        header.setWidthFull();
+        header.setPadding(true);
+        header.setJustifyContentMode(JustifyContentMode.END);
+        header.add(languageSelector);
+
+        // 🔹 Контент
+        content.setSizeFull();
+        content.setJustifyContentMode(JustifyContentMode.CENTER);
+        content.setAlignItems(Alignment.CENTER);
+
         wrapperInput();
+
+        add(header, content); // Добавляем header сверху, контент ниже
+        expand(content); // Контент занимает остальное пространство
     }
 
     private void wrapperInput() {
-        formLayout.setWidth("400px"); // ширина формы
-        formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1)); // одна колонка
-        formLayout.add(nameField, passwordField, doLogin, goToRegister);
-        formLayout.setColspan(doLogin, 1);
+        formLayout.setWidth("400px");
+        formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));
+        formLayout.add(nameField, passwordField, doLogin);
 
-        // горизонтальное центрирование
-        hWrapper.setWidthFull(); // растягиваем на всю ширину
+        hWrapper.setWidthFull();
         hWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
         hWrapper.add(formLayout);
 
-        add(hWrapper);
+        content.add(hWrapper); // Контент страницы — форма
     }
 }
