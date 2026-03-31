@@ -24,6 +24,7 @@ public class StartView extends VerticalLayout {
 
     private void wrapperInput() {
         wrapper.setAlignItems(Alignment.CENTER);
+        goToLogin.setId("go_to_login_button_id");
         wrapper.add(text, goToLogin);
 
         setSizeFull(); // 🔥 важно

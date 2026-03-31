@@ -20,6 +20,8 @@ public class LanguageSelector extends HorizontalLayout {
                     StaticData.RUSSIAN,
                     StaticData.UKRAINIAN
             );
+    Div dropdown = new Div();
+    Button globeButton = new Button("\uD83C\uDF10");
     public static final String LANG_KEY = "language";
 
     public LanguageSelector(Consumer<String> onLanguageChange) {
@@ -27,11 +29,10 @@ public class LanguageSelector extends HorizontalLayout {
         setSpacing(false);
 
         // Кнопка с планетой
-        Button globeButton = new Button("\uD83C\uDF10");
+        globeButton.setId("language_button_id");
         globeButton.getStyle().set("cursor", "pointer");
 
         // Выпадающий список
-        Div dropdown = new Div();
         dropdown.getStyle().set("display", "none");
         dropdown.getStyle().set("position", "absolute");
         dropdown.getStyle().set("top", "100%");

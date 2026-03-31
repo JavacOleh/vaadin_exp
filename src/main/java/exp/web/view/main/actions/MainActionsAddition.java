@@ -19,10 +19,12 @@ public class MainActionsAddition {
         return person -> {
             // Создаем кнопки
             var editBtn = new Button("✏️");
+            editBtn.setId("edit_person_button_id");
             editBtn.getStyle().set("cursor", "pointer");
             editBtn.addClickListener(e -> openEditDialog(person, view, false));
 
             var deleteBtn = new Button("🗑️");
+            deleteBtn.setId("delete_person_button_id");
             deleteBtn.getStyle().set("cursor", "pointer");
             deleteBtn.addClickListener(e -> {
                 view.peopleRepository.delete(person);
@@ -55,6 +57,10 @@ public class MainActionsAddition {
         var firstNameField = new TextField(firstNameHeader, person.getFirstName());
         var lastNameField = new TextField(lastNameHeader, person.getLastName());
         var ageField = new TextField(ageHeader, person.getAge() > 0 ? String.valueOf(person.getAge()) : "");
+
+        firstNameField.setId("save_person_fName_id");
+        lastNameField.setId("save_person_lName_id");
+        ageField.setId("save_person_age_id");
 
         // Кнопка Save (ОК) по центру внизу
         var saveBtn = new Button("✔", e -> {
@@ -90,8 +96,13 @@ public class MainActionsAddition {
             view.getUI().ifPresent(ui -> ui.getPage().executeJs("window.location.reload();"));
         });
 
+        saveBtn.setId("save_person_button_id");
+
         // Кнопка Cancel (x) в правом верхнем углу
         var closeBtn = new Button("✖");
+
+        closeBtn.setId("exit_from_saving_person_button_id");
+
         closeBtn.getStyle()
                 .set("padding", "0")
                 .set("width", "30px")
