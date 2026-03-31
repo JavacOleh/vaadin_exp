@@ -67,6 +67,9 @@ public class LoginView extends VerticalLayout {
     }
 
     private void wrapperInput() {
+        nameField.setId("name_field_id");
+        passwordField.setId("pass_field_id");
+        doLogin.setId("do_login_id");
         formLayout.setWidth("400px");
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));
         formLayout.add(nameField, passwordField, doLogin);

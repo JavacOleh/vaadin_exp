@@ -1,5 +1,6 @@
 package exp.web.view.main;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -7,13 +8,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import exp.util.AuthUtil;
-import exp.util.CookieUtil;
 import exp.web.entity.Person;
 import exp.web.view.main.actions.MainActionsAddition;
 import exp.web.view.lang.LanguageSelector;
 import exp.web.view.main.lang.MainViewLocalization;
-
-import static exp.web.view.lang.LanguageSelector.LANG_KEY;
 
 public class MainAddition {
     MainView view;
@@ -29,12 +27,16 @@ public class MainAddition {
     }
 
     private void setupGrid() {
-        var lang = CookieUtil.readCookie(LANG_KEY);
-        view.dataProvider = new ListDataProvider<>(view.peopleRepository.findAll());
+        var people = view.peopleRepository.findAll();
+        view.dataProvider = new ListDataProvider<>(people);
         view.grid.setDataProvider(view.dataProvider);
 
         view.grid.setWidthFull();
         view.grid.setHeight("400px");
+
+        view.hashTagIndColumn = view.grid.addColumn(person -> people.indexOf(person) + 1)
+                .setHeader("#")
+                .setTextAlign(ColumnTextAlign.CENTER);
 
         view.firstNameColumn = view.grid.addColumn(Person::getFirstName)
                 .setHeader("First Name")
@@ -61,6 +63,8 @@ public class MainAddition {
 
         // Фильтр занимает всю доступную ширину
         view.filterText.setWidthFull();
+
+        view.doNewPerson.setId("open_dialog_create_person_button_id");
 
         view.doNewPerson.addClickListener(e -> {
             Person person = new Person();

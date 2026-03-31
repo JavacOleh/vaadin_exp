@@ -32,6 +32,7 @@ public class MainView extends VerticalLayout {
     public Grid.Column<Person> lastNameColumn;
     public Grid.Column<Person> ageColumn;
     public Grid.Column<Person> actionsColumn;
+    public Grid.Column<Person> hashTagIndColumn;
     public PeopleRepository peopleRepository;
     SecurityContextRepository securityContextRepository;
     MainAddition addition;
@@ -41,6 +42,7 @@ public class MainView extends VerticalLayout {
 
         setupGridAndSearch();
         addition = new MainAddition(this);
+        doLogout.setId("do_logout_button_id");
 
         // 🔹 HEADER
         header.setWidthFull();
@@ -62,6 +64,7 @@ public class MainView extends VerticalLayout {
 
     private void setupGridAndSearch() {
         form_wrapper.setAlignItems(Alignment.CENTER); // центрируем элементы формы по горизонтали
+        filterText.setId("filter_text_id");
         form_wrapper.add(filterText, grid);
     }
 }
